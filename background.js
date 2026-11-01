@@ -1,11 +1,14 @@
+const DEFAULTS = { enabled: true, mode: "all", allowed: [], blocked: [] };
+
 function updateBadge(enabled) {
   chrome.action.setBadgeText({ text: enabled ? "" : "OFF" });
   chrome.action.setBadgeBackgroundColor({ color: "#888888" });
 }
 
+// Fill in any missing settings; existing users keep their current behavior (mode "all")
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get({ enabled: true }, (v) => {
-    chrome.storage.sync.set({ enabled: v.enabled });
+  chrome.storage.sync.get(DEFAULTS, (v) => {
+    chrome.storage.sync.set(v);
     updateBadge(v.enabled);
   });
 });
